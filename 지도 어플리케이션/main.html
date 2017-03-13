@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title> 대동여지도 </title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="main.js"></script>
+<script src="filesystem.js"></script>
+<script src="usersystem.js"></script>
+<link rel="stylesheet" type="text/css" href="main.css" />
+</head>
+<body>
+    <div id="whole">
+        <div id="header">
+            <h1><center>동국대지도</center></h1>
+            <a href="#" onclick="javascript:sendFunc()" class="lnk"> <font class="button2" >길찾기</font></a>
+            <font> &nbsp; &nbsp; &nbsp;<- 출발지와 목적지를 입력한 후 클릭하세요! </font> 
+        </div>
+        <div id="right_content" >
+            <h2 align="center">도착지선택</h2>
+            <div class="dropdown">
+            	<button onclick="myFunction()" class="dropbtn">야외</button>
+                <div id="myDropdown" class="dropdown-content">
+                    <input type="button" value="충무로" onclick="endvalue(288);" class="button">
+                    <input type="button" value="동대입구" onclick="endvalue(303);" class="button">
+                    <input type="button" value="팔정도" onclick="endvalue(69);" class="button">
+                    <input type="button" value="다향관" onclick="endvalue(53);" class="button">
+                    <input type="button" value="본관" onclick="endvalue(54);" class="button">
+                    <input type="button" value="만해광장" onclick="endvalue(30);" class="button">
+                    <input type="button" value="종각원" onclick="endvalue(86);" class="button">
+                    <input type="button" value="상록원" onclick="endvalue(45);" class="button">
+                    <input type="button" value="중앙도서관" onclick="endvalue(33);" class="button">
+                </div>
+                <button onclick="myFunction2()" class="dropbtn2">학림관</button>
+                <div id="myDropdown2" class="dropdown-content2">
+                    <input type="button" value="학림관정문" onclick="endvalue(47);" class="button">
+                    <input type="button" value="학림관1층" onclick="endvalue(113);" class="button">
+                    <input type="button" value="학림관2층" onclick="endvalue(121);" class="button">
+                    <input type="button" value="학림관3층" onclick="endvalue(126);" class="button">
+                    <input type="button" value="학림관4층" onclick="endvalue(131);" class="button">
+                    <input type="button" value="학림관5층" onclick="endvalue(136);" class="button">
+                </div>
+                <button onclick="myFunction3()" class="dropbtn3">원흥관</button>
+                <div id="myDropdown3" class="dropdown-content3">
+                   	<input type="button" value="원흥관정문" onclick="endvalue(20);" class="button">
+                   	<input type="button" value="원흥관1층" onclick="endvalue(306);" class="button">
+                   	<input type="button" value="원흥관2층" onclick="endvalue(308);" class="button">
+                   	<input type="button" value="원흥관3층" onclick="endvalue(310);" class="button">
+                   	<input type="button" value="원흥관4층" onclick="endvalue(21);" class="button">
+                </div>
+                <button onclick="myFunction4()" class="dropbtn4">법학만해관</button>
+                <div id="myDropdown4" class="dropdown-content4">
+                    <input type="button" value="법학만해관정문" onclick="endvalue(76);" class="button">
+                    <input type="button" value="법학만해관1층" onclick="endvalue(224);" class="button">
+                    <input type="button" value="법학만해관2층" onclick="endvalue(228);" class="button">
+                    <input type="button" value="법학만해관3층" onclick="endvalue(232);" class="button">
+                    <input type="button" value="법학만해관4층" onclick="endvalue(236);" class="button">
+                </div>
+                <button onclick="myFunction5()" class="dropbtn5">혜화관</button>
+                <div id="myDropdown5" class="dropdown-content5">
+                    <input type="button" value="혜화관정문" onclick="endvalue(92);" class="button">
+                    <input type="button" value="혜화관1층" onclick="endvalue(244);" class="button">
+                    <input type="button" value="혜화관2층" onclick="endvalue(247);" class="button">
+                    <input type="button" value="혜화관3층" onclick="endvalue(250);" class="button">
+                    <input type="button" value="혜화관4층" onclick="endvalue(253);" class="button">
+                </div>
+                <button onclick="myFunction6()" class="dropbtn6">신공학관</button>
+                <div id="myDropdown6" class="dropdown-content6">
+                    <input type="button" value="신공학관정문" onclick="endvalue(24);" class="button">
+                    <input type="button" value="신공학관1층" onclick="endvalue(0);" class="button">
+                    <input type="button" value="신공학관3층" onclick="endvalue(1);" class="button">
+                    <input type="button" value="신공학관7층" onclick="endvalue(15);" class="button">
+                    <input type="button" value="신공학관9층" onclick="endvalue(24);" class="button">
+                </div>
+                <button onclick="myFunction7()" class="dropbtn7">정보문화관</button>
+                <div id="myDropdown7" class="dropdown-content7">
+                    <input type="button" value="P동정문" onclick="endvalue(7);" class="button">
+                    <input type="button" value="Q동정문" onclick="endvalue(6);" class="button">
+                </div>
+                <button onclick="myFunction8()" class="dropbtn8">명진관,과학관</button>
+                	
+                <div id="myDropdown8" class="dropdown-content8">
+                    <input type="button" value="명진관정문" onclick="endvalue(59);" class="button">
+                	<input type="button" value="과학관정문" onclick="endvalue(62);" class="button">
+                </div>
+                <button onclick="myFunction9()" class="dropbtn9">사회과학관,문화관</button>
+                	
+                <div id="myDropdown9" class="dropdown-content9">
+                    <input type="button" value="사회과학관정문" onclick="endvalue(97);" class="button">
+                	<input type="button" value="문화관정문" onclick="endvalue(103);" class="button">
+                </div>
+            </div>   
+        </div>
+        <div id="left_bar">
+            <h2 align="center">출발지선택</h2>
+            <div class="dropdown">
+            	<button onclick="myFunctions()" class="dropbtns">야외</button>
+                <div id="myDropdowns" class="dropdown-contents">
+                    <input type="button" value="충무로" onclick="startvalue(288);" class="button">
+                    <input type="button" value="동대입구" onclick="startvalue(303);" class="button">
+                    <input type="button" value="팔정도" onclick="startvalue(69);" class="button">
+                    <input type="button" value="다향관" onclick="startvalue(53);" class="button">
+                    <input type="button" value="본관" onclick="startvalue(54);" class="button">
+                    <input type="button" value="만해광장" onclick="startvalue(30);" class="button">
+                    <input type="button" value="종각원" onclick="startvalue(86);" class="button">
+                    <input type="button" value="상록원" onclick="startvalue(45);" class="button">
+                    <input type="button" value="중앙도서관" onclick="startvalue(33);" class="button">
+                </div>
+                <button onclick="myFunctions2()" class="dropbtns2">학림관</button>
+                <div id="myDropdowns2" class="dropdown-contents2">
+                    <input type="button" value="학림관정문" onclick="startvalue(47);" class="button">
+                    <input type="button" value="학림관1층" onclick="startvalue(113);" class="button">
+                    <input type="button" value="학림관2층" onclick="startvalue(121);" class="button">
+                    <input type="button" value="학림관3층" onclick="startvalue(126);" class="button">
+                    <input type="button" value="학림관4층" onclick="startvalue(131);" class="button">
+                    <input type="button" value="학림관5층" onclick="startvalue(136);" class="button">
+                </div>
+                <button onclick="myFunctions3()" class="dropbtns3">원흥관</button>
+                <div id="myDropdowns3" class="dropdown-contents3">
+                   	<input type="button" value="원흥관정문" onclick="startvalue(20);" class="button">
+                   	<input type="button" value="원흥관1층" onclick="startvalue(306);" class="button">
+                   	<input type="button" value="원흥관2층" onclick="startvalue(308);" class="button">
+                   	<input type="button" value="원흥관3층" onclick="startvalue(310);" class="button">
+                   	<input type="button" value="원흥관4층" onclick="startvalue(21);" class="button">
+                </div>
+                <button onclick="myFunctions4()" class="dropbtns4">법학만해관</button>
+                <div id="myDropdowns4" class="dropdown-contents4">
+                    <input type="button" value="법학만해관정문" onclick="startvalue(76);" class="button">
+                    <input type="button" value="법학만해관1층" onclick="startvalue(224);" class="button">
+                    <input type="button" value="법학만해관2층" onclick="startvalue(228);" class="button">
+                    <input type="button" value="법학만해관3층" onclick="startvalue(232);" class="button">
+                    <input type="button" value="법학만해관4층" onclick="startvalue(236);" class="button">
+                </div>
+                <button onclick="myFunctions5()" class="dropbtns5">혜화관</button>
+                <div id="myDropdowns5" class="dropdown-contents5">
+                    <input type="button" value="혜화관정문" onclick="startvalue(92);" class="button">
+                    <input type="button" value="혜화관1층" onclick="startvalue(244);" class="button">
+                    <input type="button" value="혜화관2층" onclick="startvalue(247);" class="button">
+                    <input type="button" value="혜화관3층" onclick="startvalue(250);" class="button">
+                    <input type="button" value="혜화관4층" onclick="startvalue(253);" class="button">
+                </div>
+                <button onclick="myFunctions6()" class="dropbtns6">신공학관</button>
+                <div id="myDropdowns6" class="dropdown-contents6">
+                    <input type="button" value="신공학관정문" onclick="startvalue(24);" class="button">
+                    <input type="button" value="신공학관1층" onclick="startvalue(0);" class="button">
+                    <input type="button" value="신공학관3층" onclick="startvalue(1);" class="button">
+                    <input type="button" value="신공학관7층" onclick="startvalue(15);" class="button">
+                    <input type="button" value="신공학관9층" onclick="startvalue(24);" class="button">
+                </div>
+                <button onclick="myFunctions7()" class="dropbtns7">정보문화관</button>
+                <div id="myDropdowns7" class="dropdown-contents7">
+                    <input type="button" value="P동정문" onclick="startvalue(7);" class="button">
+                    <input type="button" value="Q동정문" onclick="startvalue(6);" class="button">
+                </div>
+                <button onclick="myFunctions8()" class="dropbtns8">명진관,과학관</button>
+                	
+                <div id="myDropdowns8" class="dropdown-contents8">
+                    <input type="button" value="명진관정문" onclick="startvalue(59);" class="button">
+                	<input type="button" value="과학관정문" onclick="startvalue(62);" class="button">
+                </div>
+                <button onclick="myFunctions9()" class="dropbtns9">사회과학관,문화관</button>
+                	
+                <div id="myDropdowns9" class="dropdown-contents9">
+                    <input type="button" value="사회과학관정문" onclick="startvalue(97);" class="button">
+                	<input type="button" value="문화관정문" onclick="startvalue(103);" class="button">
+                </div>
+            </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dongguk Map</title>
+    <link href="themes/1/js-image-slider.css" rel="stylesheet" type="text/css" />
+    <script src="themes/1/js-image-slider.js" type="text/javascript"></script>
+    <style>canvas{ visibility:hidden; }</style>
+</head>
+<body>
+
+<script language = "javascript" type="text/javascript">
+temp = location.href.split("?");
+data=temp[1].split(":");
+var id=data[0];
+var id2=data[1];
+var road =[];
+for(i=0; i<2000; i++){
+	road[i] = new Array();
+}
+var size = 0;
+var state = [];
+var open = [];
+var start = [];
+var goal = [];
+var current =[];
+var temp=[];
+var solution=[];
+var start_num=0;
+
+var all = [      
+	{x:0,y:0,floor:1,name:"university",identify:"남산학사앞"},
+	{x:4,y:-2,floor:1,name:"university",identify:"신공3층문"},
+	{x:5,y:0,floor:1,name:"university",identify:"신공3층문앞"},
+	{x:2.5,y:18.5,floor:1,name:"university",identify:"정보문화관입구"},
+	
+	{x:7.5,y:27.5,floor:1,name:"university",identify:"학관문"},
+	{x:8.5,y:27,floor:1,name:"university",identify:"학관사거리"},
+	{x:5.5,y:24,floor:1,name:"university",identify:"정Q문"},
+	{x:7.5,y:23.3,floor:1,name:"university",identify:"정P정문"},
+	{x:6,y:19,floor:1,name:"university",identify:"정보문화관삼거리"},
+	{x:6,y:15,floor:1,name:"university",identify:"원흥3관문"},
+	{x:7,y:15,floor:1,name:"university",identify:"원흥3관삼거리"},
+	{x:8,y:15,floor:1,name:"university",identify:"정P후문"},
+	{x:9,y:14,floor:1,name:"university",identify:"정P문앞"},
+	{x:8,y:8,floor:1,name:"university",identify:"원흥관후문"},
+	{x:9.5,y:-1.5,floor:1,name:"university",identify:"신공7층삼거리"},
+	{x:9,y:-2,floor:1,name:"university",identify:"신공7층문"},
+
+	{x:13,y:37,floor:1,name:"university",identify:"학관후문가는길"},
+	{x:15,y:33,floor:1,name:"university",identify:"계산관보니에사이"},
+	{x:13,y:29,floor:1,name:"university",identify:"계산관앞"},
+	{x:12,y:19,floor:1,name:"university",identify:"정보문화관만해광장사이"},
+	{x:11,y:11.3,floor:1,name:"university",identify:"원흥관정문"},
+	{x:14.5,y:5.5,floor:1,name:"university",identify:"원흥2관정문"},
+	{x:11.5,y:4.5,floor:1,name:"university",identify:"원흥뒷길삼거리"},
+	{x:13.5,y:3.5,floor:1,name:"university",identify:"원흥2관후문"},
+	{x:11,y:-3.5,floor:1,name:"university",identify:"신공9층정문"},
+	{x:13.5,y:-5.5,floor:1,name:"university",identify:"중도후문"},
+	{x:15,y:-4,floor:1,name:"university",identify:"중도후문앞"},
+
+	{x:20,y:39,floor:1,name:"university",identify:"동국후문"},
+	{x:19,y:33,floor:1,name:"university",identify:"보니에입구"},
+	{x:18.5,y:32.5,floor:1,name:"university",identify:"보니에앞"},
+	{x:20,y:19,floor:1,name:"university",identify:"만해광장"},
+	{x:17.5,y:10.5,floor:1,name:"university",identify:"원흥1관삼거리"},
+	{x:18.5,y:6,floor:1,name:"university",identify:"본관후문앞"},
+	{x:20,y:-9,floor:1,name:"university",identify:"중도정문"},
+	{x:19,y:-17,floor:1,name:"university",identify:"중도상록원쪽길"},
+	{x:20,y:-22,floor:1,name:"university",identify:"상록원앞"},
+	
+	{x:22,y:32,floor:1,name:"university",identify:"학림관좌측문"},
+	{x:22,y:12,floor:1,name:"university",identify:"만해광장앞"},
+	{x:22.5,y:5.5,floor:1,name:"university",identify:"세리오문"},
+	{x:24,y:-5,floor:1,name:"university",identify:"본관좌측문"},
+	{x:22,y:-8.5,floor:1,name:"university",identify:"중도정문앞"},
+	{x:24,y:-9,floor:1,name:"university",identify:"팔정도중도쪽"},
+	{x:22.5,y:-15.5,floor:1,name:"university",identify:"명진관좌측후문"},
+	{x:22.5,y:-17.5,floor:1,name:"university",identify:"명진관뒤좌측"},
+	{x:21.5,y:-22,floor:1,name:"university",identify:"과학관측문"},
+	{x:20.5,y:-25.5,floor:1,name:"university",identify:"상록원정문"},
+	
+	{x:27,y:34,floor:1,name:"university",identify:"학림관후문"},
+	{x:26,y:31,floor:1,name:"university",identify:"학림관정문"},
+	{x:30,y:30,floor:1,name:"university",identify:"학림관우측문"},
+	{x:29,y:22,floor:1,name:"university",identify:"헐떡고개중간"},
+	{x:29,y:18,floor:1,name:"university",identify:"금강관내려가는길"},
+	{x:27,y:12,floor:1,name:"university",identify:"헐떡고개출구"},
+	{x:29,y:6,floor:1,name:"university",identify:"다향관후문앞"},
+	{x:30,y:3,floor:1,name:"university",identify:"다향관정문"},
+	{x:26,y:2.5,floor:1,name:"university",identify:"본관우측문"},
+	{x:28.5,y:2,floor:1,name:"university",identify:"팔정도세리오쪽"},
+	{x:26,y:-3.5,floor:1,name:"university",identify:"본관중앙앞"},
+	{x:25.5,y:-6.5,floor:1,name:"university",identify:"본관좌측문앞"},
+	{x:30,y:-11,floor:1,name:"university",identify:"팔정도명진관쪽"},
+	{x:29,y:-14,floor:1,name:"university",identify:"명진관정문"},
+	{x:28,y:-18,floor:1,name:"university",identify:"명진관후문"},
+	{x:27.5,y:-18.5,floor:1,name:"university",identify:"명진관과학관사이"},
+	{x:27,y:-21.5,floor:1,name:"university",identify:"과학관정문"},
+	{x:26.5,y:-25.5,floor:1,name:"university",identify:"상록원후문"},
+	
+	{x:31,y:28,floor:1,name:"university",identify:"헐떡고개입구"},
+	{x:34,y:27,floor:1,name:"university",identify:"체육관입구"},
+	{x:32.5,y:17,floor:1,name:"university",identify:"금강관입구"},
+	{x:34.5,y:19.5,floor:1,name:"university",identify:"금강관쪽측문"},
+	{x:30.5,y:5.5,floor:1,name:"university",identify:"다향관후문"},
+	{x:32,y:-6,floor:1,name:"university",identify:"팔정도"},
+	{x:33,y:-19,floor:1,name:"university",identify:"명진관우측후문"},
+	{x:32,y:-22,floor:1,name:"university",identify:"명진관뒤우측"},
+	{x:34,y:-22.5,floor:1,name:"university",identify:"과학관우측"},
+
+	{x:39,y:0,floor:1,name:"university",identify:"다향관측문"},
+	{x:39.5,y:-2,floor:1,name:"university",identify:"팔정도다향법학쪽"},
+	{x:38.5,y:-8,floor:1,name:"university",identify:"팔정도법학관쪽"},	
+	{x:39.7,y:-8,floor:1,name:"university",identify:"법학관입구"},
+	{x:39.5,y:-13.5,floor:1,name:"university",identify:"법학관측문"},
+	{x:36.5,y:-13.5,floor:1,name:"university",identify:"팔정도만해관쪽"},
+	{x:38,y:-26,floor:1,name:"university",identify:"대운동장입구앞"},
+	{x:37,y:-30,floor:1,name:"university",identify:"대운동장입구"},
+	
+	{x:45,y:-14,floor:1,name:"university",identify:"만해혜화통로입구"},
+	{x:44,y:-29.5,floor:1,name:"university",identify:"정각원앞"},
+
+	{x:45.5,y:-2.5,floor:1,name:"university",identify:"법학관옆1"},
+	{x:46.5,y:-5.5,floor:1,name:"university",identify:"법학관옆2"},
+	{x:48,y:-13.5,floor:1,name:"university",identify:"만해혜화통로중간"},
+	{x:46,y:-22,floor:1,name:"university",identify:"정각원입구"},
+	{x:48,y:-26,floor:1,name:"university",identify:"혜화별관옆"},
+
+	{x:51.5,y:-7.5,floor:1,name:"university",identify:"법학혜화사이"},
+	{x:53,y:-15.5,floor:1,name:"university",identify:"만해혜화통로출구"},
+	{x:55,y:-25.5,floor:1,name:"university",identify:"혜화관카페입구"},
+	
+	{x:58.5,y:-7.5,floor:1,name:"university",identify:"혜화관옆1"},
+	{x:58.5,y:-17,floor:1,name:"university",identify:"혜화관정문"},
+	{x:56,y:-28,floor:1,name:"university",identify:"혜화관카페앞"},
+	{x:59.5,y:-28.5,floor:1,name:"university",identify:"혜화관카페앞옆"},
+
+	{x:62,y:-8.5,floor:1,name:"university",identify:"혜화관옆2"},
+	{x:63,y:-18,floor:1,name:"university",identify:"사회과학관앞"},
+	{x:64.5,y:-22.5,floor:1,name:"university",identify:"사회과학관정문"},
+	{x:63,y:-24.5,floor:1,name:"university",identify:"사회과학관흡연장"},
+	
+	{x:65.5,y:-10,floor:1,name:"university",identify:"사회과학관옆"},
+	{x:69,y:-11.5,floor:1,name:"university",identify:"사회과학관측문1"},
+	{x:67,y:-25.5,floor:1,name:"university",identify:"사회과학관측문2"},
+
+	{x:73,y:-10,floor:1,name:"university",identify:"문화관계단"},
+	{x:73,y:-13,floor:1,name:"university",identify:"문화관정문"},
+	{x:71,y:-26.5,floor:1,name:"university",identify:"경영관입구"},
+
+	{x:76,y:-3.5,floor:1,name:"university",identify:"이해랑좌측"},
+	{x:79,y:-4,floor:1,name:"university",identify:"이해랑입구"},
+	{x:80,y:-4.5,floor:1,name:"university",identify:"이해랑우측"},
+	{x:77,y:-14,floor:1,name:"university",identify:"문화관후문"},
+
+	{x:80.5,y:5,floor:1,name:"university",identify:"동대입구쪽문"},
+	{x:80.5,y:-12,floor:1,name:"university",identify:"학술관입구"},
+	<!-- 110 -->
+	
+	{road1:"남산학사앞",road2:"신공3층문앞"},
+	{road1:"신공3층문",road2:"신공3층문앞"},
+	{road1:"신공3층문앞",road2:"신공7층삼거리"},
+	{road1:"신공7층문",road2:"신공7층삼거리"},
+	{road1:"신공7층삼거리",road2:"원흥뒷길삼거리"},
+	{road1:"신공7층삼거리",road2:"중도후문앞"},
+	{road1:"원흥뒷길삼거리",road2:"원흥2관후문"},
+	{road1:"원흥뒷길삼거리",road2:"원흥관후문"},
+	{road1:"원흥관정문",road2:"정P문앞"},
+	{road1:"정P문앞",road2:"원흥3관삼거리"},
+	{road1:"정P문앞",road2:"정보문화관만해광장사이"},
+	{road1:"원흥3관삼거리",road2:"원흥3관문"},
+	{road1:"원흥3관삼거리",road2:"정보문화관삼거리"},
+	{road1:"정보문화관삼거리",road2:"정Q문"},
+	{road1:"정보문화관삼거리",road2:"정보문화관입구"},
+	{road1:"정Q문",road2:"정P정문"},
+	{road1:"정P정문",road2:"학관사거리"},
+	{road1:"학관사거리",road2:"학관문"},
+	{road1:"학관사거리",road2:"학관후문가는길"},
+	{road1:"학관사거리",road2:"계산관앞"},
+	{road1:"학관사거리",road2:"정보문화관만해광장사이"},
+	{road1:"정보문화관만해광장사이",road2:"원흥1관삼거리"},
+	{road1:"원흥1관삼거리",road2:"원흥2관정문"},
+	{road1:"원흥1관삼거리",road2:"만해광장앞"},
+	{road1:"원흥1관삼거리",road2:"본관후문앞"},
+	{road1:"만해광장앞",road2:"만해광장"},
+	{road1:"만해광장앞",road2:"헐떡고개출구"},
+	{road1:"헐떡고개출구",road2:"헐떡고개중간"},
+	{road1:"헐떡고개출구",road2:"다향관후문앞"},
+	{road1:"헐떡고개중간",road2:"금강관내려가는길"},
+	{road1:"헐떡고개중간",road2:"헐떡고개입구"},
+	{road1:"헐떡고개입구",road2:"학림관우측문"},
+	{road1:"헐떡고개입구",road2:"체육관입구"},
+	{road1:"학림관우측문",road2:"학림관정문"},
+	{road1:"학림관정문",road2:"학림관좌측문"},
+	{road1:"학림관좌측문",road2:"보니에앞"},
+	{road1:"보니에앞",road2:"보니에입구"},
+	{road1:"보니에앞",road2:"계산관보니에사이"},
+	{road1:"계산관보니에사이",road2:"계산관앞"},
+	{road1:"학관후문가는길",road2:"동국후문"},
+	{road1:"동국후문",road2:"학림관후문"},
+	{road1:"금강관내려가는길",road2:"금강관입구"},
+	{road1:"금강관입구",road2:"금강관쪽측문"},
+	{road1:"원흥2관정문",road2:"본관후문앞"},
+	{road1:"본관후문앞",road2:"중도후문앞"},
+	{road1:"본관후문앞",road2:"세리오문"},
+	{road1:"다향관후문앞",road2:"세리오문"},
+	{road1:"다향관후문앞",road2:"다향관후문"},
+	{road1:"다향관후문앞",road2:"팔정도세리오쪽"},
+	{road1:"팔정도세리오쪽",road2:"본관우측문"},
+	{road1:"팔정도세리오쪽",road2:"팔정도"},
+	{road1:"팔정도세리오쪽",road2:"팔정도다향법학쪽"},
+	{road1:"팔정도세리오쪽",road2:"다향관정문"},
+	{road1:"팔정도세리오쪽",road2:"본관중앙앞"},
+	{road1:"본관중앙앞",road2:"팔정도"},
+	{road1:"본관중앙앞",road2:"본관좌측문앞"},
+	{road1:"본관좌측문앞",road2:"본관좌측문"},
+	{road1:"본관좌측문앞",road2:"팔정도중도쪽"},
+	{road1:"중도후문앞",road2:"신공9층정문"},
+	{road1:"중도후문앞",road2:"중도후문"},
+	{road1:"중도후문앞",road2:"중도정문앞"},
+	{road1:"신공9층정문",road2:"중도후문"},
+	{road1:"중도정문앞",road2:"중도정문"},
+	{road1:"중도정문앞",road2:"팔정도중도쪽"},
+	{road1:"중도정문앞",road2:"명진관정문"},
+	{road1:"중도정문앞",road2:"중도상록원쪽길"},
+	{road1:"중도상록원쪽길",road2:"상록원앞"},
+	{road1:"중도상록원쪽길",road2:"명진관뒤좌측"},
+	{road1:"상록원앞",road2:"상록원정문"},
+	{road1:"상록원앞",road2:"과학관측문"},
+	{road1:"상록원정문",road2:"상록원후문"},
+	{road1:"명진관뒤좌측",road2:"명진관과학관사이"},
+	{road1:"명진관뒤좌측",road2:"상록원앞"},
+	{road1:"명진관뒤좌측",road2:"과학관정문"},
+	{road1:"명진관뒤좌측",road2:"명진관좌측후문"},
+	{road1:"명진관과학관사이",road2:"명진관후문"},
+	{road1:"명진관과학관사이",road2:"명진관우측후문"},
+	{road1:"명진관과학관사이",road2:"과학관정문"},
+	{road1:"명진관과학관사이",road2:"명진관뒤우측"},
+	{road1:"명진관뒤우측",road2:"과학관정문"},
+	{road1:"명진관뒤우측",road2:"과학관우측"},
+	{road1:"명진관뒤우측",road2:"명진관우측후문"},
+	{road1:"팔정도",road2:"팔정도중도쪽"},
+	{road1:"팔정도",road2:"팔정도다향법학쪽"},
+	{road1:"팔정도",road2:"팔정도명진관쪽"},
+	{road1:"팔정도",road2:"팔정도법학관쪽"},
+	{road1:"팔정도",road2:"팔정도만해관쪽"},
+	{road1:"팔정도중도쪽",road2:"팔정도명진관쪽"},
+	{road1:"팔정도명진관쪽",road2:"명진관정문"},
+	{road1:"팔정도명진관쪽",road2:"팔정도만해관쪽"},
+	{road1:"명진관정문",road2:"팔정도만해관쪽"},
+	{road1:"팔정도만해관쪽",road2:"팔정도법학관쪽"},
+	{road1:"팔정도만해관쪽",road2:"법학관측문"},
+	{road1:"팔정도만해관쪽",road2:"과학관우측"},
+	{road1:"팔정도만해관쪽",road2:"대운동장입구앞"},
+	{road1:"상록원후문",road2:"대운동장입구"},
+	{road1:"대운동장입구앞",road2:"대운동장입구"},
+	{road1:"대운동장입구앞",road2:"정각원앞"},
+	{road1:"대운동장입구",road2:"정각원앞"},
+	{road1:"정각원앞",road2:"정각원입구"},
+	{road1:"팔정도법학관쪽",road2:"팔정도다향법학쪽"},
+	{road1:"팔정도법학관쪽",road2:"법학관입구"},
+	{road1:"팔정도다향법학쪽",road2:"다향관측문"},
+	{road1:"정각원앞",road2:"혜화별관옆"},
+	{road1:"혜화별관옆",road2:"혜화관카페앞"},
+	{road1:"혜화관카페앞",road2:"혜화관카페입구"},
+	{road1:"혜화관카페앞",road2:"혜화관카페앞옆"},
+	{road1:"혜화관카페앞",road2:"혜화관정문"},
+	{road1:"혜화관카페앞옆",road2:"사회과학관흡연장"},
+	{road1:"사회과학관흡연장",road2:"사회과학관측문2"},
+	{road1:"사회과학관흡연장",road2:"사회과학관정문"},
+	{road1:"사회과학관측문2",road2:"경영관입구"},
+	{road1:"사회과학관정문",road2:"사회과학관앞"},
+	{road1:"혜화관정문",road2:"사회과학관앞"},
+	{road1:"팔정도다향법학쪽",road2:"법학관옆1"},
+	{road1:"법학관옆1",road2:"법학관옆2"},
+	{road1:"법학관옆2",road2:"법학혜화사이"},
+	{road1:"만해혜화통로입구",road2:"만해혜화통로중간"},
+	{road1:"만해혜화통로중간",road2:"만해혜화통로출구"},
+	{road1:"만해혜화통로중간",road2:"법학혜화사이"},
+	{road1:"법학혜화사이",road2:"혜화관옆1"},
+	{road1:"혜화관옆1",road2:"혜화관옆2"},
+	{road1:"혜화관옆2",road2:"혜화관정문"},
+	{road1:"혜화관옆2",road2:"사회과학관옆"},
+	{road1:"사회과학관옆",road2:"사회과학관앞"},
+	{road1:"사회과학관옆",road2:"사회과학관측문1"},
+	{road1:"사회과학관측문1",road2:"문화관계단"},
+	{road1:"문화관계단",road2:"문화관정문"},
+	{road1:"문화관계단",road2:"이해랑좌측"},
+	{road1:"이해랑좌측",road2:"이해랑입구"},
+	{road1:"이해랑입구",road2:"이해랑우측"},
+	{road1:"이해랑우측",road2:"학술관입구"},
+	{road1:"학술관입구",road2:"문화관후문"},
+	{road1:"이해랑우측",road2:"문화관후문"},
+	{road1:"이해랑입구",road2:"동대입구쪽문"},
+	
+	
+	<!-- 학림관내부지도 -->
+	{x:22,y:32.3,floor:1,name:"haklim1",identify:"학림관좌측문1"},
+	{x:30,y:30.3,floor:1,name:"haklim1",identify:"학림관우측문1"},
+	{x:26,y:31.3,floor:1,name:"haklim1",identify:"학림관정문1"},
+	{x:27,y:33.7,floor:1,name:"haklim1",identify:"학림관후문1"},
+	{x:22,y:33.5,floor:1,name:"haklim1",identify:"학림관좌측문앞1"},
+	{x:26.5,y:32,floor:1,name:"haklim1",identify:"학림관정문앞1"},
+	{x:30,y:31.3,floor:1,name:"haklim1",identify:"학림관우측문앞1"},
+	{road1:"학림관좌측문",road2:"학림관좌측문1"},
+	{road1:"학림관우측문",road2:"학림관우측문1"},
+	{road1:"학림관정문",road2:"학림관정문1"},
+	{road1:"학림관후문",road2:"학림관후문1"},
+	{road1:"학림관후문1",road2:"학림관정문앞1"},
+	{road1:"학림관정문1",road2:"학림관정문앞1"},
+	{road1:"학림관정문앞1",road2:"학림관우측문앞1"},
+	{road1:"학림관정문앞1",road2:"학림관좌측문앞1"},
+	{road1:"학림관좌측문앞1",road2:"학림관좌측문1"},
+	{road1:"학림관우측문앞1",road2:"학림관우측문1"},
+	<!-- 117 -->
+	{x:22,y:32.3,floor:2,name:"haklim2",identify:"학림관좌측계단2"},
+	{x:30,y:30.3,floor:2,name:"haklim2",identify:"학림관우측계단2"},
+	{x:22,y:33.5,floor:2,name:"haklim2",identify:"학림관좌측2"},
+	{x:26.5,y:32,floor:2,name:"haklim2",identify:"학림관중앙2"},
+	{x:30,y:31.3,floor:2,name:"haklim2",identify:"학림관우측2"},
+	{road1:"학림관좌측문1",road2:"학림관좌측계단2",length:1},
+	{road1:"학림관우측문1",road2:"학림관우측계단2",length:1},
+	{road1:"학림관우측계단2",road2:"학림관우측2"},
+	{road1:"학림관좌측계단2",road2:"학림관좌측2"},
+	{road1:"학림관중앙2",road2:"학림관우측2"},
+	{road1:"학림관중앙2",road2:"학림관좌측2"},
+	<!-- 122 -->
+	{x:22,y:32.3,floor:3,name:"haklim3",identify:"학림관좌측계단3"},
+	{x:30,y:30.3,floor:3,name:"haklim3",identify:"학림관우측계단3"},
+	{x:22,y:33.5,floor:3,name:"haklim3",identify:"학림관좌측3"},
+	{x:26.5,y:32,floor:3,name:"haklim3",identify:"학림관중앙3"},
+	{x:30,y:31.3,floor:3,name:"haklim3",identify:"학림관우측3"},
+	{road1:"학림관좌측계단2",road2:"학림관좌측계단3",length:1},
+	{road1:"학림관우측계단2",road2:"학림관우측계단3",length:1},
+	{road1:"학림관우측계단3",road2:"학림관우측3"},
+	{road1:"학림관좌측계단3",road2:"학림관좌측3"},
+	{road1:"학림관중앙3",road2:"학림관우측3"},
+	{road1:"학림관중앙3",road2:"학림관좌측3"},
+	<!-- 127 -->
+	{x:22,y:32.3,floor:4,name:"haklim4",identify:"학림관좌측계단4"},
+	{x:30,y:30.3,floor:4,name:"haklim4",identify:"학림관우측계단4"},
+	{x:22,y:33.5,floor:4,name:"haklim4",identify:"학림관좌측4"},
+	{x:26.5,y:32,floor:4,name:"haklim4",identify:"학림관중앙4"},
+	{x:30,y:31.3,floor:4,name:"haklim4",identify:"학림관우측4"},
+	{road1:"학림관좌측계단3",road2:"학림관좌측계단4",length:1},
+	{road1:"학림관우측계단3",road2:"학림관우측계단4",length:1},
+	{road1:"학림관우측계단4",road2:"학림관우측4"},
+	{road1:"학림관좌측계단4",road2:"학림관좌측4"},
+	{road1:"학림관중앙4",road2:"학림관우측4"},
+	{road1:"학림관중앙4",road2:"학림관좌측4"},
+	<!-- 132 -->
+	{x:22,y:32.3,floor:5,name:"haklim5",identify:"학림관좌측계단5"},
+	{x:30,y:30.3,floor:5,name:"haklim5",identify:"학림관우측계단5"},
+	{x:22,y:33.5,floor:5,name:"haklim5",identify:"학림관좌측5"},
+	{x:26.5,y:32,floor:5,name:"haklim5",identify:"학림관중앙5"},
+	{x:30,y:31.3,floor:5,name:"haklim5",identify:"학림관우측5"},
+	{road1:"학림관좌측계단4",road2:"학림관좌측계단5",length:1},
+	{road1:"학림관우측계단4",road2:"학림관우측계단5",length:1},
+	{road1:"학림관우측계단5",road2:"학림관우측5"},
+	{road1:"학림관좌측계단5",road2:"학림관좌측5"},
+	{road1:"학림관중앙5",road2:"학림관우측5"},
+	{road1:"학림관중앙5",road2:"학림관좌측5"},
+	<!-- 137 -->
+	
+	<!-- 신공학관내부지도-->
+	{x:0,y:-5,floor:1,name:"university",identify:"남산학사지나서"},
+	{x:4,y:-6,floor:1,name:"university",identify:"신공외부갈림길"},
+	{x:4,y:-8,floor:1,name:"university",identify:"신공1층밑문"},
+	{x:6,y:-3.5,floor:1,name:"university",identify:"신공1층윗문"},
+	{x:7,y:-5,floor:1,name:"singong1",identify:"신공1층중앙문"},
+	{road1:"남산학사지나서",road2:"남산학사앞"},
+	{road1:"남산학사지나서",road2:"신공외부갈림길"},
+	{road1:"신공외부갈림길",road2:"신공1층밑문"},
+	{road1:"신공외부갈림길",road2:"신공1층윗문"},
+	{road1:"신공외부갈림길",road2:"신공1층중앙문"},
+	
+
+	{x:4,y:-8.3,floor:1,name:"university",identify:"신공밑문1"},
+	{x:6,y:-3.2,floor:1,name:"university",identify:"신공윗문1"},
+	{x:7.3,y:-5,floor:1,name:"university",identify:"신공중앙문1"},
+	{road1:"신공밑문1",road2:"신공1층밑문"},
+	{road1:"신공윗문1",road2:"신공1층윗문"},
+	{road1:"신공중앙문1",road2:"신공1층중앙문"},
+	{x:3.5,y:-9.5,floor:1,name:"singong1",identify:"신공밑문앞1"},
+	{x:4.5,y:-10,floor:1,name:"singong1",identify:"신공밑문계단1"},
+	{x:6.2,y:-10.5,floor:1,name:"singong1",identify:"신공밑꺽는곳1"},
+	{x:8.5,y:-6.5,floor:1,name:"singong1",identify:"신공중앙문계단1"},
+	{x:8.8,y:-4.8,floor:1,name:"singong1",identify:"신공중앙문앞1"},
+	{x:6.5,y:-2.5,floor:1,name:"singong1",identify:"신공윗문앞1"},
+	{x:9.5,y:-3.5,floor:1,name:"singong1",identify:"신공윗꺽는곳1"},
+	{x:8,y:-3,floor:1,name:"singong1",identify:"신공윗문계단1"},
+	{road1:"신공밑문1",road2:"신공밑문앞1"},
+	{road1:"신공윗문1",road2:"신공윗문앞1"},
+	{road1:"신공중앙문1",road2:"신공중앙문앞1"},
+	{road1:"신공중앙문계단1",road2:"신공중앙문앞1"},
+	{road1:"신공중앙문계단1",road2:"신공밑꺽는곳1"},
+	{road1:"신공밑문계단1",road2:"신공밑꺽는곳1"},
+	{road1:"신공밑문계단1",road2:"신공밑문앞1"},
+	{road1:"신공윗꺽는곳1",road2:"신공중앙문계단1"},
+	{road1:"신공윗꺽는곳1",road2:"신공윗문계단1"},
+	{road1:"신공윗문앞1",road2:"신공윗문계단1"},
+	
+	{x:3.5,y:-9.5,floor:2,name:"singong2",identify:"신공밑문앞2"},
+	{x:4.5,y:-10,floor:2,name:"singong2",identify:"신공밑문계단2"},
+	{x:6.2,y:-10.5,floor:2,name:"singong2",identify:"신공밑꺽는곳2"},
+	{x:8.5,y:-6.5,floor:2,name:"singong2",identify:"신공중앙문계단2"},
+	{x:8.8,y:-4.8,floor:2,name:"singong2",identify:"신공중앙문앞2"},
+	{x:6.5,y:-2.5,floor:2,name:"singong2",identify:"신공윗문앞2"},
+	{x:9.5,y:-3.5,floor:2,name:"singong2",identify:"신공윗꺽는곳2"},
+	{x:8,y:-3,floor:2,name:"singong2",identify:"신공윗문계단2"},
+	{road1:"신공중앙문계단2",road2:"신공중앙문앞2"},
+	{road1:"신공중앙문계단2",road2:"신공밑꺽는곳2"},
+	{road1:"신공밑문계단2",road2:"신공밑꺽는곳2"},
+	{road1:"신공밑문계단2",road2:"신공밑문앞2"},
+	{road1:"신공윗꺽는곳2",road2:"신공중앙문계단2"},
+	{road1:"신공윗꺽는곳2",road2:"신공윗문계단2"},
+	{road1:"신공윗문앞2",road2:"신공윗문계단2"},
+	{road1:"신공밑문계단2",road2:"신공윗문계단2"},
+	{road1:"신공중앙문계단2",road2:"신공중앙문계단1",length:1},
+	{road1:"신공윗문계단2",road2:"신공윗문계단1",length:1},
+	{road1:"신공밑문계단2",road2:"신공밑문계단1",length:1},
+	
+	{x:3.5,y:-9.5,floor:3,name:"singong3",identify:"신공밑문앞3"},
+	{x:4.5,y:-10,floor:3,name:"singong3",identify:"신공밑문계단3"},
+	{x:6.2,y:-10.5,floor:3,name:"singong3",identify:"신공밑꺽는곳3"},
+	{x:8.5,y:-6.5,floor:3,name:"singong3",identify:"신공중앙문계단3"},
+	{x:8.8,y:-4.8,floor:3,name:"singong3",identify:"신공중앙문앞3"},
+	{x:6.5,y:-2.5,floor:3,name:"singong3",identify:"신공윗문앞3"},
+	{x:9.5,y:-3.5,floor:3,name:"singong3",identify:"신공윗꺽는곳3"},
+	{x:8,y:-3,floor:3,name:"singong3",identify:"신공윗문계단3"},
+	{x:4,y:-2.2,floor:3,name:"singong3",identify:"신공3층문1"},
+	{road1:"신공중앙문계단3",road2:"신공중앙문앞3"},
+	{road1:"신공중앙문계단3",road2:"신공밑꺽는곳3"},
+	{road1:"신공밑문계단3",road2:"신공밑꺽는곳3"},
+	{road1:"신공밑문계단3",road2:"신공밑문앞3"},
+	{road1:"신공윗꺽는곳3",road2:"신공중앙문계단3"},
+	{road1:"신공윗꺽는곳3",road2:"신공윗문계단3"},
+	{road1:"신공윗문앞3",road2:"신공윗문계단3"},
+	{road1:"신공밑문계단3",road2:"신공윗문계단3"},
+	{road1:"신공3층문1",road2:"신공윗꺽는곳3"},
+	{road1:"신공중앙문계단3",road2:"신공중앙문계단2",length:1},
+	{road1:"신공윗문계단3",road2:"신공윗문계단2",length:1},
+	{road1:"신공밑문계단3",road2:"신공밑문계단2",length:1},
+	
+	{x:3.5,y:-9.5,floor:3,name:"singong4",identify:"신공밑문앞4"},
+	{x:4.5,y:-10,floor:3,name:"singong4",identify:"신공밑문계단4"},
+	{x:6.2,y:-10.5,floor:3,name:"singong4",identify:"신공밑꺽는곳4"},
+	{x:8.5,y:-6.5,floor:3,name:"singong4",identify:"신공중앙문계단4"},
+	{x:8.8,y:-4.8,floor:3,name:"singong4",identify:"신공중앙문앞4"},
+	{x:6.5,y:-2.5,floor:3,name:"singong4",identify:"신공윗문앞4"},
+	{x:9.5,y:-3.5,floor:3,name:"singong4",identify:"신공윗꺽는곳4"},
+	{x:8,y:-3,floor:3,name:"singong4",identify:"신공윗문계단4"},
+	{road1:"신공중앙문계단4",road2:"신공중앙문앞4"},
+	{road1:"신공중앙문계단4",road2:"신공밑꺽는곳4"},
+	{road1:"신공밑문계단4",road2:"신공밑꺽는곳4"},
+	{road1:"신공밑문계단4",road2:"신공밑문앞4"},
+	{road1:"신공윗꺽는곳4",road2:"신공중앙문계단4"},
+	{road1:"신공윗꺽는곳4",road2:"신공윗문계단4"},
+	{road1:"신공윗문앞4",road2:"신공윗문계단4"},
+	{road1:"신공중앙문계단4",road2:"신공중앙문계단3",length:1},
+	{road1:"신공윗문계단4",road2:"신공윗문계단3",length:1},
+	{road1:"신공밑문계단4",road2:"신공밑문계단3",length:1},
+	
+	{x:3.5,y:-9.5,floor:3,name:"singong5",identify:"신공밑문앞5"},
+	{x:4.5,y:-10,floor:3,name:"singong5",identify:"신공밑문계단5"},
+	{x:6.2,y:-10.5,floor:3,name:"singong5",identify:"신공밑꺽는곳5"},
+	{x:8.5,y:-6.5,floor:3,name:"singong5",identify:"신공중앙문계단5"},
+	{x:8.8,y:-4.8,floor:3,name:"singong5",identify:"신공중앙문앞5"},
+	{x:6.5,y:-2.5,floor:3,name:"singong5",identify:"신공윗문앞5"},
+	{x:9.5,y:-3.5,floor:3,name:"singong5",identify:"신공윗꺽는곳5"},
+	{x:8,y:-3,floor:3,name:"singong5",identify:"신공윗문계단5"},
+	{road1:"신공중앙문계단5",road2:"신공중앙문앞5"},
+	{road1:"신공중앙문계단5",road2:"신공밑꺽는곳5"},
+	{road1:"신공밑문계단5",road2:"신공밑꺽는곳5"},
+	{road1:"신공밑문계단5",road2:"신공밑문앞5"},
+	{road1:"신공윗꺽는곳5",road2:"신공중앙문계단5"},
+	{road1:"신공윗꺽는곳5",road2:"신공윗문계단5"},
+	{road1:"신공윗문앞5",road2:"신공윗문계단5"},
+	{road1:"신공중앙문계단5",road2:"신공중앙문계단4",length:1},
+	{road1:"신공윗문계단5",road2:"신공윗문계단4",length:1},
+	{road1:"신공밑문계단5",road2:"신공밑문계단4",length:1},
+	
+	{x:3.5,y:-9.5,floor:3,name:"singong6",identify:"신공밑문앞6"},
+	{x:4.5,y:-10,floor:3,name:"singong6",identify:"신공밑문계단6"},
+	{x:6.2,y:-10.5,floor:3,name:"singong6",identify:"신공밑꺽는곳6"},
+	{x:8.5,y:-6.5,floor:3,name:"singong6",identify:"신공중앙문계단6"},
+	{x:8.8,y:-4.8,floor:3,name:"singong6",identify:"신공중앙문앞6"},
+	{x:6.5,y:-2.5,floor:3,name:"singong6",identify:"신공윗문앞6"},
+	{x:9.5,y:-3.5,floor:3,name:"singong6",identify:"신공윗꺽는곳6"},
+	{x:8,y:-3,floor:3,name:"singong6",identify:"신공윗문계단6"},
+	{road1:"신공중앙문계단6",road2:"신공중앙문앞6"},
+	{road1:"신공중앙문계단6",road2:"신공밑꺽는곳6"},
+	{road1:"신공밑문계단6",road2:"신공밑꺽는곳6"},
+	{road1:"신공밑문계단6",road2:"신공밑문앞6"},
+	{road1:"신공윗꺽는곳6",road2:"신공중앙문계단6"},
+	{road1:"신공윗꺽는곳6",road2:"신공윗문계단6"},
+	{road1:"신공윗문앞6",road2:"신공윗문계단6"},
+	{road1:"신공중앙문계단6",road2:"신공중앙문계단5",length:1.6},
+	{road1:"신공윗문계단6",road2:"신공윗문계단5",length:1.6},
+	{road1:"신공밑문계단6",road2:"신공밑문계단5",length:1.6},
+	
+	{x:3.5,y:-9.5,floor:3,name:"singong7",identify:"신공밑문앞7"},
+	{x:4.5,y:-10,floor:3,name:"singong7",identify:"신공밑문계단7"},
+	{x:6.2,y:-10.5,floor:3,name:"singong7",identify:"신공밑꺽는곳7"},
+	{x:8.5,y:-6.5,floor:3,name:"singong7",identify:"신공중앙문계단7"},
+	{x:8.8,y:-4.8,floor:3,name:"singong7",identify:"신공중앙문앞7"},
+	{x:6.5,y:-2.5,floor:3,name:"singong7",identify:"신공윗문앞7"},
+	{x:9.5,y:-3.5,floor:3,name:"singong7",identify:"신공윗꺽는곳7"},
+	{x:8,y:-3,floor:3,name:"singong7",identify:"신공윗문계단7"},
+	{x:9,y:-2.2,floor:3,name:"singong7",identify:"신공7층문7"},
+	{road1:"신공중앙문계단7",road2:"신공중앙문앞7"},
+	{road1:"신공중앙문계단7",road2:"신공밑꺽는곳7"},
+	{road1:"신공밑문계단7",road2:"신공밑꺽는곳7"},
+	{road1:"신공밑문계단7",road2:"신공밑문앞7"},
+	{road1:"신공윗꺽는곳7",road2:"신공중앙문계단7"},
+	{road1:"신공윗꺽는곳7",road2:"신공윗문계단7"},
+	{road1:"신공윗문앞7",road2:"신공윗문계단7"},
+	{road1:"신공중앙문계단7",road2:"신공중앙문계단6",length:1},
+	{road1:"신공윗문계단7",road2:"신공윗문계단6",length:1},
+	{road1:"신공밑문계단7",road2:"신공밑문계단6",length:1},
+	{road1:"신공7층문7",road2:"신공윗꺽는곳7"},
+	{road1:"신공7층문7",road2:"신공7층문"},
+	
+	{x:3.5,y:-9.5,floor:3,name:"singong8",identify:"신공밑문앞8"},
+	{x:4.5,y:-10,floor:3,name:"singong8",identify:"신공밑문계단8"},
+	{x:6.2,y:-10.5,floor:3,name:"singong8",identify:"신공밑꺽는곳8"},
+	{x:8.5,y:-6.5,floor:3,name:"singong8",identify:"신공중앙문계단8"},
+	{x:8.8,y:-4.8,floor:3,name:"singong8",identify:"신공중앙문앞8"},
+	{x:6.5,y:-2.5,floor:3,name:"singong8",identify:"신공윗문앞8"},
+	{x:9.5,y:-3.5,floor:3,name:"singong8",identify:"신공윗꺽는곳8"},
+	{x:8,y:-3,floor:3,name:"singong8",identify:"신공윗문계단8"},
+	{road1:"신공중앙문계단8",road2:"신공중앙문앞8"},
+	{road1:"신공중앙문계단8",road2:"신공밑꺽는곳8"},
+	{road1:"신공밑문계단8",road2:"신공밑꺽는곳8"},
+	{road1:"신공밑문계단8",road2:"신공밑문앞8"},
+	{road1:"신공윗꺽는곳8",road2:"신공중앙문계단8"},
+	{road1:"신공윗꺽는곳8",road2:"신공윗문계단8"},
+	{road1:"신공윗문앞8",road2:"신공윗문계단8"},
+	{road1:"신공중앙문계단8",road2:"신공중앙문계단7",length:1},
+	{road1:"신공윗문계단8",road2:"신공윗문계단7",length:1},
+	{road1:"신공밑문계단8",road2:"신공밑문계단7",length:1},
+	
+	{x:3.5,y:-9.5,floor:3,name:"singong9",identify:"신공밑문앞9"},
+	{x:4.5,y:-10,floor:3,name:"singong9",identify:"신공밑문계단9"},
+	{x:6.2,y:-10.5,floor:3,name:"singong9",identify:"신공밑꺽는곳9"},
+	{x:8.5,y:-6.5,floor:3,name:"singong9",identify:"신공중앙문계단9"},
+	{x:8.8,y:-4.8,floor:3,name:"singong9",identify:"신공중앙문앞9"},
+	{x:6.5,y:-2.5,floor:3,name:"singong9",identify:"신공윗문앞9"},
+	{x:9.5,y:-3.5,floor:3,name:"singong9",identify:"신공윗꺽는곳9"},
+	{x:8,y:-3,floor:3,name:"singong9",identify:"신공윗문계단9"},
+	{x:10.7,y:-3.5,floor:1,name:"university",identify:"신공9층정문9"},
+	{road1:"신공중앙문계단9",road2:"신공중앙문앞9"},
+	{road1:"신공중앙문계단9",road2:"신공밑꺽는곳9"},
+	{road1:"신공밑문계단9",road2:"신공밑꺽는곳9"},
+	{road1:"신공밑문계단9",road2:"신공밑문앞9"},
+	{road1:"신공윗꺽는곳9",road2:"신공중앙문계단9"},
+	{road1:"신공윗꺽는곳9",road2:"신공윗문계단9"},
+	{road1:"신공윗문앞9",road2:"신공윗문계단9"},
+	{road1:"신공중앙문계단9",road2:"신공중앙문계단8",length:1},
+	{road1:"신공윗문계단9",road2:"신공윗문계단8",length:1},
+	{road1:"신공밑문계단9",road2:"신공밑문계단8",length:1},
+	{road1:"신공9층정문",road2:"신공9층정문9"},
+	{road1:"신공윗꺽는곳9",road2:"신공9층정문9"},
+	
+	
+	<!-- 만해관 내부지도 -->
+	{x:40,y:-8,floor:1,name:"manhae1",identify:"법학관입구1"},
+	{x:39.5,y:-13.2,floor:1,name:"manhae1",identify:"법학관측문1"},
+	{x:44.7,y:-14,floor:1,name:"manhae1",identify:"만해혜화통로입구1"},
+	{road1:"법학관입구",road2:"법학관입구1"},
+	{road1:"법학관측문",road2:"법학관측문1"},
+	{road1:"만해혜화통로입구",road2:"만해혜화통로입구1"},
+	
+	{x:40,y:-12,floor:1,name:"manhae1",identify:"법학관측문앞1"},
+	{x:41.2,y:-7.5,floor:1,name:"manhae1",identify:"법학관정문앞1"},
+	{x:43.4,y:-8.5,floor:1,name:"manhae1",identify:"법학관정문앞계단1"},
+	{x:41.5,y:-12.5,floor:1,name:"manhae1",identify:"법학관측문앞계단1"},
+	{road1:"법학관측문앞계단1",road2:"법학관측문앞1"},
+	{road1:"법학관측문앞1",road2:"법학관정문앞1"},
+	{road1:"법학관정문앞1",road2:"법학관정문앞계단1"},
+	{road1:"법학관정문앞1",road2:"법학관입구1"},
+	{road1:"법학관측문앞1",road2:"법학관측문1"},
+	{road1:"법학관측문앞계단1",road2:"만해혜화통로입구1"},
+	
+	{x:40,y:-12,floor:1,name:"manhae2",identify:"법학관측문앞2"},
+	{x:41.2,y:-7.5,floor:1,name:"manhae2",identify:"법학관정문앞2"},
+	{x:43.4,y:-8.5,floor:1,name:"manhae2",identify:"법학관정문앞계단2"},
+	{x:41.5,y:-12.5,floor:1,name:"manhae2",identify:"법학관측문앞계단2"},
+	{road1:"법학관측문앞계단2",road2:"법학관측문앞2"},
+	{road1:"법학관측문앞2",road2:"법학관정문앞2"},
+	{road1:"법학관정문앞2",road2:"법학관정문앞계단2"},
+	{road1:"법학관정문앞계단1",road2:"법학관정문앞계단2",length:1},
+	{road1:"법학관측문앞계단1",road2:"법학관측문앞계단2",length:1},
+	
+	{x:40,y:-12,floor:1,name:"manhae3",identify:"법학관측문앞3"},
+	{x:41.2,y:-7.5,floor:1,name:"manhae3",identify:"법학관정문앞3"},
+	{x:43.4,y:-8.5,floor:1,name:"manhae3",identify:"법학관정문앞계단3"},
+	{x:41.5,y:-12.5,floor:1,name:"manhae3",identify:"법학관측문앞계단3"},
+	{road1:"법학관측문앞계단3",road2:"법학관측문앞3"},
+	{road1:"법학관측문앞3",road2:"법학관정문앞3"},
+	{road1:"법학관정문앞3",road2:"법학관정문앞계단3"},
+	{road1:"법학관정문앞계단2",road2:"법학관정문앞계단3",length:1},
+	{road1:"법학관측문앞계단2",road2:"법학관측문앞계단3",length:1},
+	
+	{x:40,y:-12,floor:1,name:"manhae4",identify:"법학관측문앞4"},
+	{x:41.2,y:-7.5,floor:1,name:"manhae4",identify:"법학관정문앞4"},
+	{x:43.4,y:-8.5,floor:1,name:"manhae4",identify:"법학관정문앞계단4"},
+	{x:41.5,y:-12.5,floor:1,name:"manhae4",identify:"법학관측문앞계단4"},
+	{road1:"법학관측문앞계단4",road2:"법학관측문앞4"},
+	{road1:"법학관측문앞4",road2:"법학관정문앞4"},
+	{road1:"법학관정문앞4",road2:"법학관정문앞계단4"},
+	{road1:"법학관정문앞계단3",road2:"법학관정문앞계단4",length:1},
+	{road1:"법학관측문앞계단3",road2:"법학관측문앞계단4",length:1},
+	
+	
+	<!--혜화관 내부지도 -->
+	{x:58.2,y:-17,floor:1,name:"hyehwa1",identify:"혜화관정문1"},
+	{x:53.3,y:-16.3,floor:1,name:"hyehwa4",identify:"만해혜화통로출구4"},
+	{road1:"혜화관정문",road2:"혜화관정문1"},
+	{road1:"만해혜화통로출구",road2:"만해혜화통로출구4"},
+	
+	{x:54.5,y:-23,floor:1,name:"hyehwa1",identify:"혜화좌측계단1"},
+	{x:59.5,y:-10.5,floor:1,name:"hyehwa1",identify:"혜화우측계단1"},
+	{x:57,y:-17,floor:1,name:"hyehwa1",identify:"혜화중앙계단1"},
+	{road1:"혜화좌측계단1",road2:"혜화중앙계단1"},
+	{road1:"혜화중앙계단1",road2:"혜화우측계단1"},
+	{road1:"혜화관정문1",road2:"혜화중앙계단1"},
+	
+	{x:54.5,y:-23,floor:1,name:"hyehwa2",identify:"혜화좌측계단2"},
+	{x:59.5,y:-10.5,floor:1,name:"hyehwa2",identify:"혜화우측계단2"},
+	{x:57,y:-17,floor:1,name:"hyehwa2",identify:"혜화중앙계단2"},
+	{road1:"혜화좌측계단2",road2:"혜화중앙계단2"},
+	{road1:"혜화중앙계단2",road2:"혜화우측계단2"},
+	{road1:"혜화좌측계단1",road2:"혜화좌측계단2",length:1},
+	{road1:"혜화중앙계단1",road2:"혜화중앙계단2",length:1},
+	{road1:"혜화우측계단1",road2:"혜화우측계단2",length:1},
+	
+	{x:54.5,y:-23,floor:1,name:"hyehwa3",identify:"혜화좌측계단3"},
+	{x:59.5,y:-10.5,floor:1,name:"hyehwa3",identify:"혜화우측계단3"},
+	{x:57,y:-17,floor:1,name:"hyehwa3",identify:"혜화중앙계단3"},
+	{road1:"혜화좌측계단3",road2:"혜화중앙계단3"},
+	{road1:"혜화중앙계단3",road2:"혜화우측계단3"},
+	{road1:"혜화좌측계단2",road2:"혜화좌측계단3",length:1},
+	{road1:"혜화중앙계단2",road2:"혜화중앙계단3",length:1},
+	{road1:"혜화우측계단2",road2:"혜화우측계단3",length:1},
+	
+	{x:54.5,y:-23,floor:1,name:"hyehwa4",identify:"혜화좌측계단4"},
+	{x:59.5,y:-10.5,floor:1,name:"hyehwa4",identify:"혜화우측계단4"},
+	{x:57,y:-17,floor:1,name:"hyehwa4",identify:"혜화중앙계단4"},
+	{road1:"혜화좌측계단4",road2:"혜화중앙계단4"},
+	{road1:"혜화중앙계단4",road2:"혜화우측계단4"},
+	{road1:"혜화좌측계단3",road2:"혜화좌측계단4",length:1},
+	{road1:"혜화중앙계단3",road2:"혜화중앙계단4",length:1},
+	{road1:"혜화우측계단3",road2:"혜화우측계단4",length:1},
+	{road1:"만해혜화통로출구4",road2:"혜화중앙계단4"},
+	
+	{x:54.5,y:-23,floor:1,name:"hyehwa5",identify:"혜화좌측계단5"},
+	{x:59.5,y:-10.5,floor:1,name:"hyehwa5",identify:"혜화우측계단5"},
+	{x:57,y:-17,floor:1,name:"hyehwa5",identify:"혜화중앙계단5"},
+	{road1:"혜화좌측계단5",road2:"혜화중앙계단5"},
+	{road1:"혜화중앙계단5",road2:"혜화우측계단5"},
+	{road1:"혜화좌측계단4",road2:"혜화좌측계단5",length:1},
+	{road1:"혜화중앙계단4",road2:"혜화중앙계단5",length:1},
+	{road1:"혜화우측계단4",road2:"혜화우측계단5",length:1},
+	
+	{x:54.5,y:-23,floor:1,name:"hyehwa6",identify:"혜화좌측계단6"},
+	{x:59.5,y:-10.5,floor:1,name:"hyehwa6",identify:"혜화우측계단6"},
+	{x:57,y:-17,floor:1,name:"hyehwa6",identify:"혜화중앙계단6"},
+	{road1:"혜화좌측계단6",road2:"혜화중앙계단6"},
+	{road1:"혜화중앙계단6",road2:"혜화우측계단6"},
+	{road1:"혜화좌측계단5",road2:"혜화좌측계단6",length:1},
+	{road1:"혜화중앙계단5",road2:"혜화중앙계단6",length:1},
+	{road1:"혜화우측계단5",road2:"혜화우측계단6",length:1},
+
+	<!-- 정보문화관P 내부지도 -->
+	{x:7.5,y:23,floor:1,name:"p3",identify:"정P정문3"},
+	{x:8,y:15.3,floor:1,name:"p3",identify:"정P후문3"},
+	{x:6.8,y:23.5,floor:1,name:"p3",identify:"정P정문계단3"},
+	{x:7.5,y:15.7,floor:1,name:"p3",identify:"정P후문계단3"},
+	{road1:"정P정문3",road2:"정P정문"},
+	{road1:"정P후문",road2:"정P후문3"},
+	{road1:"정P정문3",road2:"정P정문계단3"},
+	{road1:"정P후문3",road2:"정P후문계단3"},
+	{road1:"정P후문3",road2:"정P정문3"},
+	
+	{x:7.5,y:23,floor:1,name:"p2",identify:"정P정문2"},
+	{x:8,y:15.3,floor:1,name:"p2",identify:"정P후문2"},
+	{x:6.8,y:23.5,floor:1,name:"p2",identify:"정P정문계단2"},
+	{x:7.5,y:15.7,floor:1,name:"p2",identify:"정P후문계단2"},
+	{road1:"정P정문계단3",road2:"정P정문계단2"},
+	{road1:"정P후문계단3",road2:"정P후문계단2"},
+	{road1:"정P정문2",road2:"정P정문계단2"},
+	{road1:"정P후문2",road2:"정P후문계단2"},
+	{road1:"정P후문2",road2:"정P정문2"},
+	
+	{x:7.5,y:23,floor:1,name:"p4",identify:"정P정문4"},
+	{x:8,y:15.3,floor:1,name:"p4",identify:"정P후문4"},
+	{x:6.8,y:23.5,floor:1,name:"p4",identify:"정P정문계단4"},
+	{x:7.5,y:15.7,floor:1,name:"p4",identify:"정P후문계단4"},
+	{road1:"정P정문계단4",road2:"정P정문계단3"},
+	{road1:"정P후문계단4",road2:"정P후문계단3"},
+	{road1:"정P정문4",road2:"정P정문계단4"},
+	{road1:"정P후문4",road2:"정P후문계단4"},
+	{road1:"정P후문4",road2:"정P정문4"},
+	
+	<!-- 과학관 내부지도 -->
+	{x:26.7,y:-21.7,floor:1,name:"science1",identify:"과학관정문1"},
+	{x:21.8,y:-22,floor:1,name:"science1",identify:"과학관측문1"},
+	{x:22,y:-23.5,floor:1,name:"science1",identify:"과학관중앙1"},
+	{x:28.5,y:-22.2,floor:1,name:"science1",identify:"과학관계단1"},
+	{road1:"과학관정문1",road2:"과학관정문"},
+	{road1:"과학관측문1",road2:"과학관측문"},
+	{road1:"과학관중앙1",road2:"과학관정문1"},
+	{road1:"과학관중앙1",road2:"과학관측문1"},
+	{road1:"과학관중앙1",road2:"과학관계단1"},
+	
+	{x:26.7,y:-21.7,floor:1,name:"science2",identify:"과학관정문2"},
+	{x:21.8,y:-22,floor:1,name:"science2",identify:"과학관측문2"},
+	{x:22,y:-23.5,floor:1,name:"science2",identify:"과학관중앙2"},
+	{x:28.5,y:-22.2,floor:1,name:"science2",identify:"과학관계단2"},
+	{road1:"과학관중앙2",road2:"과학관정문2"},
+	{road1:"과학관중앙2",road2:"과학관측문2"},
+	{road1:"과학관중앙2",road2:"과학관계단2"},
+	{road1:"과학관계단1",road2:"과학관계단2"},
+	{road1:"과학관계단1",road2:"과학관계단2"},
+	
+	{x:26.7,y:-21.7,floor:1,name:"science3",identify:"과학관정문3"},
+	{x:21.8,y:-22,floor:1,name:"science3",identify:"과학관측문3"},
+	{x:22,y:-23.5,floor:1,name:"science3",identify:"과학관중앙3"},
+	{x:28.5,y:-22.2,floor:1,name:"science3",identify:"과학관계단3"},
+	{road1:"과학관중앙3",road2:"과학관정문3"},
+	{road1:"과학관중앙3",road2:"과학관측문3"},
+	{road1:"과학관중앙3",road2:"과학관계단3"},
+	{road1:"과학관계단2",road2:"과학관계단3"},
+	{road1:"과학관계단2",road2:"과학관계단3"},
+	
+	{x:26.7,y:-21.7,floor:1,name:"science4",identify:"과학관정문4"},
+	{x:21.8,y:-22,floor:1,name:"science4",identify:"과학관측문4"},
+	{x:22,y:-23.5,floor:1,name:"science4",identify:"과학관중앙4"},
+	{x:28.5,y:-22.2,floor:1,name:"science4",identify:"과학관계단4"},
+	{road1:"과학관중앙4",road2:"과학관정문4"},
+	{road1:"과학관중앙4",road2:"과학관측문4"},
+	{road1:"과학관중앙4",road2:"과학관계단4"},
+	{road1:"과학관계단3",road2:"과학관계단4"},
+	{road1:"과학관계단3",road2:"과학관계단4"},
+	
+
+	{x:-36,y:50,floor:1,name:"chungmuro",identify:"충무로1번출구"},
+	{x:-28,y:1.5,floor:1,name:"chungmuro",identify:"동막골"},
+	{x:-3,y:0,floor:1,name:"chungmuro",identify:"남산학사앞2"},
+	{x:-30.5,y:51.5,floor:1,name:"chungmuro",identify:"충무로1번출구앞"},
+	{road1:"남산학사앞2",road2:"남산학사앞"},
+	{road1:"남산학사앞2",road2:"동막골"},
+	{road1:"충무로1번출구앞",road2:"동막골"},
+	{road1:"충무로1번출구",road2:"충무로1번출구앞"},
+
+	{x:2.8,y:18.5,floor:1,name:"chungmuro",identify:"정보문화관입구2"},
+	{x:-1,y:17.5,floor:1,name:"chungmuro",identify:"정보문화관입구앞"},
+	{x:-3.2,y:20.7,floor:1,name:"chungmuro",identify:"정보문화관입구코너"},
+	{x:-10,y:22,floor:1,name:"chungmuro",identify:"정보문화관가는길"},
+	{x:-16,y:28,floor:1,name:"chungmuro",identify:"필동면옥"},
+	{x:-28,y:27,floor:1,name:"chungmuro",identify:"필동주민센터"},
+	{road1:"정보문화관입구",road2:"정보문화관입구2"},
+	{road1:"정보문화관입구앞",road2:"정보문화관입구2"},
+	{road1:"정보문화관입구앞",road2:"정보문화관입구코너"},
+	{road1:"정보문화관가는길",road2:"정보문화관입구코너"},
+	{road1:"필동면옥",road2:"정보문화관가는길"},
+	{road1:"필동면옥",road2:"필동주민센터"},
+	{road1:"충무로1번출구앞",road2:"필동주민센터"},
+	
+	{x:16,y:36.5,floor:1,name:"chungmuro",identify:"동국후문2"},
+	{x:16,y:39,floor:1,name:"chungmuro",identify:"동국후문2앞"},
+	{x:-2,y:45,floor:1,name:"chungmuro",identify:"쥬씨"},
+	{x:3,y:61.5,floor:1,name:"chungmuro",identify:"교차로"},
+	{road1:"동국후문2",road2:"동국후문2앞"},
+	{road1:"쥬씨",road2:"동국후문2앞"},
+	{road1:"쥬씨",road2:"교차로"},
+	{road1:"충무로1번출구앞",road2:"교차로"},
+	
+	{x:80.2,y:5,floor:1,name:"dongip",identify:"동대입구쪽문2"},
+	{x:102.5,y:7,floor:1,name:"dongip",identify:"동입역출구"},
+	{road1:"동대입구쪽문2",road2:"동대입구쪽문"},
+	{road1:"동대입구쪽문2",road2:"동입역출구"},
+	{road1:"정P후문",road2:"정P문앞"},
+	
+	<!-- 원흥관 내부지도 -->
+	{x:11,y:11,floor:1,name:"wonheung1",identify:"원흥관정문1"},
+	{x:8.2,y:8,floor:1,name:"wonheung1",identify:"원흥관후문1"},
+	{x:9.2,y:9.5,floor:1,name:"wonheung1",identify:"원흥관중앙1"},
+	{x:7.5,y:9,floor:1,name:"wonheung1",identify:"원흥관중앙계단1"},
+	{road1:"원흥관정문1",road2:"원흥관정문"},
+	{road1:"원흥관후문1",road2:"원흥관후문"},
+	{road1:"원흥관후문1",road2:"원흥관중앙1"},
+	{road1:"원흥관정문1",road2:"원흥관중앙1"},
+	{road1:"원흥관중앙계단1",road2:"원흥관중앙1"},
+	
+	{x:9.2,y:9.5,floor:1,name:"wonheung2",identify:"원흥관중앙2"},
+	{x:7.5,y:9,floor:1,name:"wonheung2",identify:"원흥관중앙계단2"},
+	{road1:"원흥관중앙계단2",road2:"원흥관중앙2"},
+	{road1:"원흥관중앙계단2",road2:"원흥관중앙계단1"},
+	
+	{x:9.2,y:9.5,floor:1,name:"wonheung3",identify:"원흥관중앙3"},
+	{x:7.5,y:9,floor:1,name:"wonheung3",identify:"원흥관중앙계단3"},
+	{road1:"원흥관중앙계단3",road2:"원흥관중앙3"},
+	{road1:"원흥관중앙계단3",road2:"원흥관중앙계단2"},
+	
+	{x:9.2,y:9.5,floor:1,name:"wonheung4",identify:"원흥관중앙4"},
+	{x:7.5,y:9,floor:1,name:"wonheung4",identify:"원흥관중앙계단4"},
+	{x:14.2,y:5.5,floor:1,name:"wonheung4",identify:"원흥2관정문4"},
+	{road1:"원흥관중앙계단4",road2:"원흥관중앙4"},
+	{road1:"원흥관중앙계단4",road2:"원흥관중앙계단3"},
+	{road1:"원흥2관정문4",road2:"원흥2관정문"},
+	{road1:"원흥2관정문4",road2:"원흥관중앙4"},
+	];
+loadMap(all);
+
+start.x = state[id].x;
+start.y = state[id].y;
+start.floor = state[id].floor;
+start.id = id;
+start.name = state[id].name;
+start.identify = state[id].identify;
+goal.x = state[id2].x;
+goal.y = state[id2].y;
+goal.floor = state[id2].floor;
+goal.id = id2;
+goal.name = state[id2].name;
+goal.identify = state[id2].identify;
+start.g = 0;
+start.h = compute_h(state[id],state[id2]);
+start.f = start.g+ start.h;
+
+insert_state(open,start);
+for(var i=0;i<10000;i++){
+	current = open[0];
+	if(current.id == goal.id){
+		break;
+	}
+	else{
+		remove_state(open);
+		generate_children(current);
+	}
+}
+print_solution(current);
+
+
+function loadMap(dat){
+	for(i = 0; i< dat.length;i++){
+		if(dat[i].name === undefined){
+			if(dat[i].length>0){
+				var id3, id4;
+				 for(j=0;j<state.length;j++){
+					 if(dat[i].road1===state[j].identify){
+						 id3 = j;
+					 }
+					 if(dat[i].road2===state[j].identify){
+						 id4 = j;
+					 }
+				 }
+				 road[id3][id4] = dat[i].length;
+				 road[id4][id3] = dat[i].length;
+			}
+			else{
+				var id3, id4;
+				 for(j=0;j<state.length;j++){
+					 if(dat[i].road1===state[j].identify){
+						 id3 = j;
+					 }
+					 if(dat[i].road2===state[j].identify){
+						 id4 = j;
+					 }
+				 }
+				 var length = compute_h(state[id3],state[id4]);
+				 road[id3][id4] = length;
+				 road[id4][id3] = length;
+			}
+		}
+		else{
+			insert(dat[i].x, dat[i].y, dat[i].floor, dat[i].name, dat[i].identify);
+		}
+	}
+}
+
+function toRadians (angle) {
+	  return angle * (Math.PI / 180);
+	}
+	
+function print_solution(current){
+	for(i=0;i<state.length;i++){
+	}
+	for(i=1;current!=null;i++){
+		solution.push({x:current.x, y:current.y, identify:current.identify,name:current.name});
+		current = current.parent;
+	}
+	solution.reverse();
+	for (i = 0; i < solution.length; i++) { 
+	}
+}
+function sorting(list) {
+    list.sort(function(a, b){return a.f - b.f});
+}
+
+function display(){
+ id = document.frm.start.value;
+ id2 = document.frm.end.value;
+}
+function displayState() {
+ for (i = 0; i < state.length; i++) { 
+ }
+}
+
+function compute_h(a,b){
+ var x1 = a.x; 
+ var y1 = a.y;
+ var x2 = b.x;
+ var y2 = b.y;
+ return Math.sqrt((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
+}
+
+function insert(x,y,floor,name,identify){
+ state.push({x:x,y:y,floor:floor,id:state.length,name:name,identify:identify});
+}
+
+function insert_road(a,b){
+ var id3, id4;
+ for(i=0;i<state.length;i++){
+	 if(a===state[i].identify){
+		 id3 = i;
+	 }
+	 if(b===state[i].identify){
+		 id4 = i;
+	 }
+ }
+ var length = compute_h(state[id3],state[id4]);
+ road[id3][id4] = length;
+ road[id4][id3] = length;
+}
+
+function insert_road2(a,b,length){
+	 var id3, id4;
+	 for(i=0;i<state.length;i++){
+		 if(a===state[i].identify){
+			 id3 = i;
+		 }
+		 if(b===state[i].identify){
+			 id4 = i;
+		 }
+	 }
+	 road[id3][id4] = length;
+	 road[id4][id3] = length;
+}
+
+function insert_state(list,state){
+ list.push(state);
+ sorting(list);
+}
+function generate_children(s){
+	for (j = 0; j < state.length; j++) {
+		if (road[j][s.id] > 0) {
+			var fa = s.g+ road[j][s.id]+compute_h(state[j], goal);
+			var openfind = 0;
+			for(var k=0; k<open.length;k++){
+				if(open[k].identify === state[j].identify){
+					openfind=1;
+					if(open[k].f < fa){
+					}
+					else{
+						open[k].g = s.g + road[j][s.id];
+						open[k].h = compute_h(state[j],goal);
+						open[k].f = fa;
+						open[k].parent = s;
+					}
+				}
+			}
+			if(openfind==0){
+				insert_state(open, {x:state[j].x,y:state[j].y,floor:state[j].floor,
+					id:state[j].id,g:s.g+ road[j][s.id],h:compute_h(state[j], goal),
+					f:fa, name:state[j].name,identify:state[j].identify,parent:s});
+			}
+		}
+	}
+}
+
+function remove_state(list){
+	list.reverse();
+	list.pop();
+	list.reverse();
+}
+function print_image(){
+	imgShow(start.name,0);
+	for (i=1; i<solution.length; i++){
+			if(solution[i].name === solution[i-1].name){
+			}
+			else{
+				imgShow(solution[i].name,i);
+			}
+	}
+}
+
+
+</script>
+
+<div id="sliderFrame">
+    <div id="slider">
+    </div>
+    </div>
+    <canvas id="canvas"></canvas>
+     <script type="text/javascript">
+     
+    print_image();
+    function imgShow(name,startnum){
+        // img 태그 생성
+      var can = document.getElementById("canvas");
+      var ctx = can.getContext("2d");
+        var img = new Image();
+        var img2 = new Image();
+        // img 태그의 src속성 설정
+        img.src =name+".png";
+        can.width  = 1100;
+        can.height = 650;
+        
+        img.onload = function(){
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+        if(name === "chungmuro"){
+        	for(var j=startnum; j<solution.length; j++){
+        		if(solution[j].name === "chungmuro"){
+        			if(j==startnum){
+        				ctx.beginPath();
+                        ctx.moveTo( 567 + solution[j].x * 8.9, 580- solution[j].y*8.9);
+        			}
+        			else{
+                        ctx.lineTo( 567 + solution[j].x * 8.9, 580- solution[j].y*8.9);
+                        if(j == solution.length-1){
+                        	break;
+                        }
+                        if(!(solution[j].name === solution[j+1].name))
+                        		break;
+        			}
+        		}
+        		
+        		else{
+        		}
+        	}
+    		ctx.moveTo(567 + solution[j].x * 8.9,580- solution[j].y*8.9);
+        	ctx.arc(567 + solution[j].x * 8.9,580- solution[j].y*8.9,10,0,360*Math.PI/180,false);
+        }
+        if(name === "dongip"){
+        	for(var j=startnum; j<solution.length; j++){
+        		if(solution[j].name === "dongip"){
+        			if(j==startnum){
+        				ctx.beginPath();
+                        ctx.moveTo( -200 + solution[j].x * 8.9, 350- solution[j].y*8.9);
+        			}
+        			else{
+                        ctx.lineTo( -200 + solution[j].x * 8.9, 350- solution[j].y*8.9);
+                        if(j == solution.length-1){
+                        	break;
+                        }
+                        if(!(solution[j].name === solution[j+1].name))
+                        		break;
+        			}
+        		}
+        		
+        		else{
+        		}
+        	}
+    		ctx.moveTo( -200 + solution[j].x * 8.9,350- solution[j].y*8.9);
+        	ctx.arc( -200 + solution[j].x * 8.9,350- solution[j].y*8.9,10,0,360*Math.PI/180,false);
+        }
+        if(name === "university"){
+        	var x2;
+        	var y2;
+        	for(var j=startnum; j<solution.length; j++){
+        		if(solution[j].name === "university"){
+        			if(j==startnum){
+        				ctx.beginPath();
+        				x2 =  181 + solution[j].x * 8.9;
+        				y2 = 347- solution[j].y*8.9;
+                        ctx.moveTo( 181 + solution[j].x * 8.9, 347- solution[j].y*8.9);
+                        if(j == solution.length-1){
+                        	ctx.moveTo(x2,y2);
+                        	ctx.arc(x2,y2,10,0,360*Math.PI/180,false);
+                        	break;
+                        }
+                        if(!(solution[j].name === solution[j+1].name)){
+                        	ctx.moveTo(181 + solution[j].x * 8.9,347- solution[j].y*8.9);
+                        	ctx.arc(181 + solution[j].x * 8.9,347- solution[j].y*8.9,10,0,360*Math.PI/180,false);
+                        		break;
+                        }
+        			}
+        			else{
+                        ctx.lineTo( 181 + solution[j].x * 8.9, 347- solution[j].y*8.9);
+                        if(j == solution.length-1){
+                        	ctx.moveTo(181 + solution[j].x * 8.9,347- solution[j].y*8.9);
+                        	ctx.arc(181 + solution[j].x * 8.9,347- solution[j].y*8.9,10,0,360*Math.PI/180,false);
+                        	break;
+                        }
+                        if(!(solution[j].name === solution[j+1].name)){
+                        	ctx.moveTo(181 + solution[j].x * 8.9,347- solution[j].y*8.9);
+                        	ctx.arc(181 + solution[j].x * 8.9,347- solution[j].y*8.9,10,0,360*Math.PI/180,false);
+                        		break;
+                        }
+        			}
+        		}
+        		
+        		else{
+        		}
+        	}
+            
+    	 }
+        if(name === "manhae1"||name === "manhae2"||name === "manhae3"||name === "manhae4"){
+        	for(var j=startnum; j<solution.length; j++){
+        		if(solution[j].name === name){
+        			var delta = toRadians(250);
+    				var x1= + solution[j].x * 50;
+    				var y1=  -solution[j].y*50;
+        			if(j==startnum){
+        				var x2 = 700+Math.sqrt((x1*x1)+(y1*y1))*Math.cos(delta+Math.atan(y1/x1));
+        				var y2 =2500+Math.sqrt((x1*x1)+(y1*y1))*Math.sin(delta+Math.atan(y1/x1));
+        				ctx.beginPath();
+                        ctx.moveTo( x2, y2);
+                     
+        			}
+        			else{
+        				var x2 = 700+Math.sqrt((x1*x1)+(y1*y1))*Math.cos(delta+Math.atan(y1/x1));
+        				var y2 =2500+Math.sqrt((x1*x1)+(y1*y1))*Math.sin(delta+Math.atan(y1/x1));
+                        ctx.lineTo(x2, y2);
+                        if(j == solution.length-1){
+                        	break;
+                        }
+                        	if(!(solution[j].name === solution[j+1].name))
+                        		break;
+        			}
+        		}
+        		else{
+        		}
+        	}
+    		ctx.moveTo(x2,y2);
+        	ctx.arc(x2,y2,10,0,360*Math.PI/180,false);
+        }
+       
+        if(name === "hyehwa1"||name === "hyehwa2"||name === "hyehwa3"||name === "hyehwa4"||name === "hyehwa5"||name === "hyehwa6"){
+        	for(var j=startnum; j<solution.length; j++){
+        		if(solution[j].name === name){
+        			var delta = toRadians(65);
+    				var x1= + solution[j].x * 55;
+    				var y1=  -solution[j].y*55;
+        			if(j==startnum){
+        				var x2 = 50+Math.sqrt((x1*x1)+(y1*y1))*Math.cos(delta+Math.atan(y1/x1));
+        				var y2 =-3000+Math.sqrt((x1*x1)+(y1*y1))*Math.sin(delta+Math.atan(y1/x1));
+        				ctx.beginPath();
+                        ctx.moveTo( x2, y2);
+        			}
+        			else{
+        				var x2 = 50+Math.sqrt((x1*x1)+(y1*y1))*Math.cos(delta+Math.atan(y1/x1));
+        				var y2 =-3000+Math.sqrt((x1*x1)+(y1*y1))*Math.sin(delta+Math.atan(y1/x1));
+                        ctx.lineTo(x2, y2);
+                        if(j == solution.length-1){
+                        	break;
+                        }
+                        	if(!(solution[j].name === solution[j+1].name)){
+                        		break;
+                        	}
+        			}
+        		}
+        		else{
+        		}
+        	}
+    		ctx.moveTo(x2,y2);
+        	ctx.arc(x2,y2,10,0,360*Math.PI/180,false);
+        }
+        
+        if(name === "haklim1"||name === "haklim2"||name === "haklim3"||name === "haklim4"||name === "haklim5"||name === "haklim6"){
+        	for(var j=startnum; j<solution.length; j++){
+        		if(solution[j].name === name){
+        			var delta = toRadians(-10);
+    				var x1= + solution[j].x *60;
+    				var y1=  -solution[j].y*60;
+        			if(j==startnum){
+        				var x2 = -570+Math.sqrt((x1*x1)+(y1*y1))*Math.cos(delta+Math.atan(y1/x1));
+        				var y2 =2500+Math.sqrt((x1*x1)+(y1*y1))*Math.sin(delta+Math.atan(y1/x1));
+        				ctx.beginPath();
+                        ctx.moveTo( x2, y2);
+        			}
+        			else{
+        				var x2 =-570+Math.sqrt((x1*x1)+(y1*y1))*Math.cos(delta+Math.atan(y1/x1));
+        				var y2 =2500+Math.sqrt((x1*x1)+(y1*y1))*Math.sin(delta+Math.atan(y1/x1));
+                        ctx.lineTo(x2, y2);
+                        if(j == solution.length-1){
+                        	break;
+                        }
+                        	if(!(solution[j].name === solution[j+1].name)){
+                        		break;
+                        	}
+        			}
+        		}
+        		else{
+        		}
+        	}
+    		ctx.moveTo(x2,y2);
+        	ctx.arc(x2,y2,10,0,360*Math.PI/180,false);
+        }
+        
+        if(name === "p1"||name === "p2"||name === "p3"||name === "p4"||name === "p5"||name === "p6"){
+        	for(var j=startnum; j<solution.length; j++){
+        		if(solution[j].name === name){
+        			var delta = toRadians(-85);
+    				var x1= + solution[j].x *90;
+    				var y1=  -solution[j].y*90;
+        			if(j==startnum){
+        				var x2 = 2250+Math.sqrt((x1*x1)+(y1*y1))*Math.cos(delta+Math.atan(y1/x1));
+        				var y2 =1100+Math.sqrt((x1*x1)+(y1*y1))*Math.sin(delta+Math.atan(y1/x1));
+        				ctx.beginPath();   
+                        ctx.moveTo( x2, y2);
+        			}
+        			else{
+        				var x2 =2250+Math.sqrt((x1*x1)+(y1*y1))*Math.cos(delta+Math.atan(y1/x1));
+        				var y2 =1100+Math.sqrt((x1*x1)+(y1*y1))*Math.sin(delta+Math.atan(y1/x1));
+                        ctx.lineTo(x2, y2);
+                        if(j == solution.length-1){
+                        	break;
+                        }
+                        	if(!(solution[j].name === solution[j+1].name)){
+                        		break;
+                        	}
+        			}
+        		}
+        		else{
+        		}
+        	}
+    		ctx.moveTo(x2,y2);
+        	ctx.arc(x2,y2,10,0,360*Math.PI/180,false);
+        }
+        
+        if(name === "wonheung1"||name === "wonheung2"||name === "wonheung3"||name === "wonheung4"||name === "wonheung5"||name === "wonheung6"){
+        	for(var j=startnum; j<solution.length; j++){
+        		if(solution[j].name === name){
+        			var delta = toRadians(140);
+    				var x1= + solution[j].x *50;
+    				var y1=  -solution[j].y*50;
+        			if(j==startnum){
+        				var x2 = 700+Math.sqrt((x1*x1)+(y1*y1))*Math.cos(delta+Math.atan(y1/x1));
+        				var y2 =-400+Math.sqrt((x1*x1)+(y1*y1))*Math.sin(delta+Math.atan(y1/x1));
+        				ctx.beginPath();   
+                        ctx.moveTo( x2, y2);
+        			}
+        			else{
+        				var x2 =700+Math.sqrt((x1*x1)+(y1*y1))*Math.cos(delta+Math.atan(y1/x1));
+        				var y2 =-400+Math.sqrt((x1*x1)+(y1*y1))*Math.sin(delta+Math.atan(y1/x1));
+                        ctx.lineTo(x2, y2);
+                        if(j == solution.length-1){
+                        	break;
+                        }
+                        	if(!(solution[j].name === solution[j+1].name)){
+                        		break;
+                        	}
+        			}
+        		}
+        		else{
+        		}
+        	}
+    		ctx.moveTo(x2,y2);
+        	ctx.arc(x2,y2,10,0,360*Math.PI/180,false);
+        }
+        
+        ctx.lineWidth=4;
+        ctx.strokeStyle = '#ff0000';
+        ctx.stroke();
+        var SVGtopngDataURL = document.getElementById("canvas").toDataURL("image/png");
+        img2.src = SVGtopngDataURL;
+
+        ctx.clearRect(0,0,can.width, can.height);
+        ctx.beginPath();
+        }
+        
+        // imgPlaceHolder DIV 태그 검색
+        // div 태그에 img 태그를 자식으로 추가
+        var panel = document.getElementById("slider");
+        panel.appendChild(img2);
+}
+    </script>
+</body>
+</html>
+<!--  university : (181,347) *8.9 -->
